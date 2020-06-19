@@ -1,0 +1,48 @@
+#include <iostream>
+#include <windows.h>
+using namespace std;
+void SetColor(int ForgC){
+    WORD wColor;
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if(GetConsoleScreenBufferInfo(hStdOut, &csbi)){
+        wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+        SetConsoleTextAttribute(hStdOut, wColor);
+    }
+    return;
+}
+void ClearConsoleToColors(int ForgC,int BackC){
+    WORD wColor = ((BackC & 0x0F) << 4) + (ForgC & 0x0F);
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD coord = {0, 0};
+    DWORD count;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    SetConsoleTextAttribute(hStdOut, wColor);
+    if(GetConsoleScreenBufferInfo(hStdOut, &csbi)){
+        FillConsoleOutputCharacter(hStdOut, (TCHAR) 36, csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
+        FillConsoleOutputAttribute(hStdOut, csbi.wAttributes, csbi.dwSize.X * csbi.dwSize.Y, coord, &count );
+        SetConsoleCursorPosition(hStdOut, coord);
+    }
+    return;
+}
+int main(){
+    ClearConsoleToColors(0,7);
+    SetColor(9);
+    cout<<1<<endl;
+    SetColor(2);
+    cout<<2<<endl;
+    SetColor(12);
+    cout<<3<<endl;
+    SetColor(1);
+    cout<<4<<endl;
+    SetColor(4);
+    cout<<5<<endl;
+    SetColor(3);
+    cout<<6<<endl;
+    SetColor(5);
+    cout<<7<<endl;
+    SetColor(8);
+    cout<<8<<endl;
+}
+
+
