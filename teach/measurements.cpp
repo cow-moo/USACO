@@ -1,47 +1,84 @@
 #include <iostream>
+#include <stdio.h>
 #include <map>
 #include <algorithm>
-#include <set>
 using namespace std;
-#define MAXN 100050
 
-pair<int, pair<int, int> > events[MAXN];
-map<int, int> cows;
-set<int> maxCows;
+struct Measurement {
+    int day, id, change;
+    bool operator<(const Measurement& b) const {
+        return day < b.day;
+    }
+};
+
+Measurement events[100050];
+map<int, int> outputs;
+map<int, int> cnt;
 
 int main() {
-    int n, g, ans = 0;
+    freopen("measurement.in", "r", stdin);
+    freopen("measurement.out", "w", stdout);
+
+    int n, g;
     cin >> n >> g;
 
     for (int i = 0; i < n; i++) {
-        cin >> events[i].first >> events[i].second.first >> events[i].second.second;
-        cows[events[i].second.first] = g;
-        maxCows.insert(events[i].second.first);
+        cin >> events[i].day >> events[i].id >> events[i].change;
+        if (outputs[events[i].id] == 0) {
+            cnt[g]++;
+            outputs[events[i].id] = g;
+        }
     }
+
+    //cout << cnt[g] << endl;
 
     sort(events, events + n);
 
-    int maxim = g;
+    int ans = 0;
+    bool change, alone;
     for (int i = 0; i < n; i++) {
-        int id = events[i].second.first;
-        int change = events[i].second.second;
-        if (change > 0) {
-            cows[id] += change;
-            if (cows[id] > maxim) {
-                maxim = cows[id];
-                maxCows.clear();
-                maxCows.insert(id);
+        int prevMilk = outputs[events[i].id];
+        outputs[events[i].id] += events[i].change;
+        int newMilk = outputs[events[i].id];
+
+        change = false, alone = false;
+
+        if (cnt.find(prevMilk) == --cnt.end()) {
+            change = true;
+        }
+        cnt[prevMilk]--;
+        if (cnt[prevMilk] == 0) {
+            cnt.erase(prevMilk);
+            alone = true;
+        }
+
+        cnt[newMilk]++;
+        if (cnt.find(newMilk) == --cnt.end()) {
+            if (change == false)
                 ans++;
-            }
-            else if (cows[id] == maxim) {
-                maxCows.insert(id);
+            else if (alone == false)
                 ans++;
-            }
+            else if (cnt[newMilk] != 1)
+                ans++;
         }
         else {
-            if (cows[id] == maximum) {
-
-            }
+            if (change == true)
+                ans++;
         }
+
+        //ans += change;
     }
+
+//    for (auto a : cnt) {
+//        cout << a.first << " " << a.second << endl;
+//    }
+
+    cout << ans << endl;
 }
+
+
+
+
+
+
+
