@@ -1,16 +1,15 @@
 #include <iostream>
-#include <algorithm>
+#include <string>
 using namespace std;
 
-bool comp(int a, int b) {
-    return a > b;
-}
+int main() {
+  int *array = new int[10];
+  int *ptr = array;
+  for (int i=0; i < 10; i++) {
+    *ptr = i;
+    ptr++;
+  }
 
-int main(){
-    int x[5] = {3, 4, 2, 1, 5};
-    sort(x, x+5, comp);
-
-    for (int i = 0; i < 5; i++) {
-        cout << x[i] << endl;
-    }
+  cout << ptr << endl;
+  cout << array << endl;
 }
