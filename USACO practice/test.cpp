@@ -3,13 +3,19 @@
 using namespace std;
 
 int main() {
-  int *array = new int[10];
-  int *ptr = array;
-  for (int i=0; i < 10; i++) {
-    *ptr = i;
-    ptr++;
-  }
+    string p;
+    cin >> p;
 
-  cout << ptr << endl;
-  cout << array << endl;
+    long long cur = 1, ans = 0;
+    for (int i = 1; i < p.length(); i++)
+    {
+        if (p[i] - p[i - 1] == 1 || (p[i] == 'a' && p[i - 1] == 'z')
+        {
+            cur++;
+        }
+        else
+        {
+            ans += cur * ()
+        }
+    }
 }

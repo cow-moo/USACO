@@ -26,7 +26,8 @@ void add(int i, int delta)
 
 int main()
 {
-    add(1, 3);
+    add(3, 3);
     //add(5, 34);
-    cout << sum(1) << endl;
+    //sum adds everything up to and including i
+    cout << sum(3) - sum(2) << endl;
 }
