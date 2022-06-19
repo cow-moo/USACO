@@ -1,27 +1,32 @@
 #include <iostream>
 using namespace std;
-#define MOD 1000000007
+#define MOD 1000000007ull
 #define MAXN 1000
 
-long long fastexp(long long base, long long exp)
+long long fastExp(long long base, long long exp)
 {
     long long res = 1;
     while (exp > 0)
     {
         if (exp & 1)
         {
-            res *= res * base;
+            res *= base;
             res %= MOD;
         }
-        res = res * res;
-        res %= MOD;
+        base = base * base;
+        base %= MOD;
         exp >>= 1;
     }
     return res;
 }
 
+long long modInverse(long long num)
+{
+    return fastExp(num, MOD - 2);
+}
+
 long long fact[MAXN], inv[MAXN], choose[MAXN][MAXN];
-int n = 100;
+int n = 405;
 
 void computeChoose()
 {
@@ -49,12 +54,23 @@ void computeChoose()
 
 int main()
 {
+//    for (int i = 0; i < 400; i++)
+//    {
+//        cout << 'a';
+//    }
+//    long long temp = MOD * MOD;
+//    cout << temp << endl;
     //for MOD is prime
     //inv = fastexp(x, MOD - 2);
     //a / x == a * inv mod(MOD)
 
     //choose[i][j] = ((fact[i] * inv[j]) % MOD * inv[i - j]) % MOD;
 
-    computeChoose();
-    cout << choose[96][6] << endl;
+//    computeChoose();
+//    //cout << choose[400][270] << endl;
+//    for (int i = 1; i <= 400; i++)
+//        cout << i << ": " << choose[400][i] << endl;
+
+//    cout << modInverse(2) << endl;
+    cout << fastexp(2, 10) << endl;
 }
