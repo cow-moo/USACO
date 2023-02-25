@@ -1,3 +1,10 @@
 {
-    "code-runner.runInTerminal": true
+    "code-runner.runInTerminal": true,
+    "files.associations": {
+        "algorithm": "cpp",
+        "random": "cpp",
+        "map": "cpp",
+        "iostream": "cpp",
+        "ios": "cpp"
+    }
 }
