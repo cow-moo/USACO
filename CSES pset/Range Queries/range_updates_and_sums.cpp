@@ -1,196 +1,175 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
-#define MAXN 200005
 
-struct SegmentTree
-{
-    int n;
-    long long tree[4 * MAXN];
-    long long lazy[4 * MAXN];
-    //lazy[v] != 0 means tree[v] is updated but not its children
-    //negative means set
-    //queries must be non-negative
-    //if negative queries, then just have 2 arrays for lazyAdd and lazySet (or array of bool flags)
+//[l, r) for range queries
+const long long def = 0;
+struct LazySegTree {
+    int n, h;
+    vector<long long> bits;
+    vector<long long> lazy;
+    LazySegTree(int n) : n(n), bits((n + 1) * 2, def), lazy(n, 0), h(sizeof(int) * 8 - __builtin_clz(n)) {}
 
-    static const long long id = 0;
-
-    long long op(long long a, long long b)
+    void init()
     {
-        return a + b;
+        for (int i = n - 1; i > 0; i--)
+            bits[i] = combine(bits[i << 1], bits[i << 1 | 1]);
     }
 
-    void updateLazy(long long addend, int v, int tl, int tr)
+    //get value of current interval given values of child intervals, lazy value, and length of interval
+    long long combine(long long a, long long b, long long val = 0, int len = 0)
     {
-        if (addend >= 0)
+        if (val < 0)
+            return -val * len;
+        else
+            return a + b + val * len;
+    }
+
+    //apply increment, update bits and lazy
+    void apply(int p, long long val, int len)
+    {
+        if (p < n)
         {
-            if (lazy[v] >= 0)
-            {
-                lazy[v] += addend;
-                tree[v] += (tr - tl + 1) * addend;
-            }
+            if (val < 0)
+                lazy[p] = val;
             else
-            {
-                lazy[v] -= addend;
-                tree[v] = (tr - tl + 1) * -lazy[v];
-            }
+                lazy[p] += lazy[p] < 0 ? -val : val;
+            bits[p] = combine(bits[p << 1], bits[p << 1 | 1], lazy[p], len);
         }
         else
+            bits[p] = combine(bits[p], def, val, len);
+    }
+
+    void build(int p)
+    {
+        int len = 1;
+        while (p > 1)
+            p >>= 1, len <<= 1, bits[p] = combine(bits[p << 1], bits[p << 1 | 1], lazy[p], len);
+    }
+
+    void push(int p)
+    {
+        for (int s = h, len = 1 << (h - 1); s > 0; s--, len >>= 1)
         {
-            lazy[v] = addend;
-            tree[v] = (tr - tl + 1) * -lazy[v];
+            int i = p >> s;
+            if (lazy[i] != 0)
+            {
+                apply(i << 1, lazy[i], len);
+                apply(i << 1 | 1, lazy[i], len);
+                lazy[i] = 0;
+            }
         }
     }
 
-    SegmentTree(long long arr[], int n) : n(n)
+    void increment(int l, int r, long long val)
     {
-        build(1, 0, n - 1, arr);
+        l += n, r += n;
+        push(l), push(r - 1);
+        int l0 = l, r0 = r, len = 1;
+        for (; l < r; l >>= 1, r >>= 1, len <<= 1)
+        {
+            if (l & 1)
+                apply(l++, val, len);
+            if (r & 1)
+                apply(--r, val, len);
+        }
+        build(l0), build(r0 - 1);
     }
 
-    long long build(int v, int tl, int tr, long long arr[])
+    void set(int l, int r, long long val)
     {
-        if (tl == tr)
+        l += n, r += n;
+        push(l), push(r - 1);
+        int l0 = l, r0 = r, len = 1;
+        for (; l < r; l >>= 1, r >>= 1, len <<= 1)
         {
-            return tree[v] = arr[tl];
+            if (l & 1)
+                apply(l++, -val, len);
+            if (r & 1)
+                apply(--r, -val, len);
         }
-        int tm = (tl + tr) / 2;
-        return tree[v] = op(build(v * 2, tl, tm, arr), build(v * 2 + 1, tm + 1, tr, arr));
+        build(l0), build(r0 - 1);
     }
 
     long long query(int l, int r)
     {
-        return query(l, r, 1, 0, n - 1);
-    }
-
-    long long query(int l, int r, int v, int tl, int tr)
-    {
-        if (l > r)
+        l += n, r += n;
+        push(l), push(r - 1);
+        
+        long long res = def;
+        for (; l < r; l >>= 1, r >>= 1)
         {
-            return id;
+            if (l & 1)
+                res = combine(res, bits[l++]);
+            if (r & 1)
+                res = combine(res, bits[--r]);
         }
-        if (l == tl && r == tr)
-        {
-            return tree[v];
-        }
-        if (lazy[v] != 0 && tl != tr)
-            push(v, tl, tr);
-        int tm = (tl + tr) / 2;
-        return op(query(l, min(r, tm), v * 2, tl, tm), query(max(l, tm + 1), r, v * 2 + 1, tm + 1, tr));
-    }
-
-    void push(int v, int tl, int tr)
-    {
-        int tm = (tl + tr) / 2;
-        updateLazy(lazy[v], v * 2, tl, tm);
-        updateLazy(lazy[v], v * 2 + 1, tm + 1, tr);
-        lazy[v] = 0;
-    }
-
-    void updateRange(int l, int r, long long addend)
-    {
-        updateRange(l, r, addend, 1, 0, n - 1);
-    }
-
-    void updateRange(int l, int r, long long addend, int v, int tl, int tr)
-    {
-        if (l > r)
-            return;
-        if (l == tl && r == tr)
-        {
-            updateLazy(addend, v, tl, tr);
-        }
-        else
-        {
-            if (lazy[v] != 0 && tl != tr)
-                push(v, tl, tr);
-            int tm = (tl + tr) / 2;
-            updateRange(l, min(r, tm), addend, v * 2, tl, tm);
-            updateRange(max(l, tm + 1), r, addend, v * 2 + 1, tm + 1, tr);
-
-            tree[v] = op(tree[v * 2], tree[v * 2 + 1]);
-        }
+        return res;
     }
 };
 
-long long arr[MAXN];
+pair<int, int> debug(LazySegTree lst, int i)
+{
+    if (i >= lst.n)
+        return {i - lst.n, i - lst.n + 1};
+    pair<int, int> l = debug(lst, i * 2);
+    pair<int, int> r = debug(lst, i * 2 + 1);
+    if (l.second != r.first)
+        return {-1, -1};
+    return {l.first, r.second};
+}
+
+void printDebug(LazySegTree lst)
+{
+    for (int i = 1; i < 2 * lst.n; i++)
+    {
+        auto res = debug(lst, i);
+        cout << i << ": [" << res.first << ", " << res.second << ") " << lst.bits[i];
+        if (i < lst.n)
+            cout << " " << lst.lazy[i];
+        cout << endl;
+    }
+}
 
 int main()
 {
     int n, q;
     cin >> n >> q;
 
+    LazySegTree lst(n);
+
     for (int i = 0; i < n; i++)
     {
-        cin >> arr[i];
+        cin >> lst.bits[n + i];
     }
-
-    SegmentTree tree(arr, n);
+    lst.init();
 
     for (int i = 0; i < q; i++)
     {
-        int inp;
-        cin >> inp;
+        int inp, a, b;
+        cin >> inp >> a >> b;
+        a--, b--;
 
-        if (inp == 1)
+        if (inp == 4)
         {
-            int a, b;
-            long long x;
-            cin >> a >> b >> x;
-            a--; b--;
-
-            tree.updateRange(a, b, x);
+            printDebug(lst);
+            continue;
         }
-        else if (inp == 2)
-        {
-            int a, b;
-            long long x;
-            cin >> a >> b >> x;
-            a--; b--;
 
-            tree.updateRange(a, b, -x);
+        if (inp == 3)
+        {
+            cout << lst.query(a, b + 1) << endl;
         }
         else
         {
-            int a, b;
-            cin >> a >> b;
-            a--; b--;
+            long long x;
+            cin >> x;
 
-            cout << tree.query(a, b) << endl;
+            if (inp == 1)
+                lst.increment(a, b + 1, x);
+            else
+                lst.set(a, b + 1, x);
         }
     }
 }
-/*
-66
-11
-18
-28
-138
-164
-717
-194
-170
-220
-371
-667
-115
-245
-723
-60
-201
-736
-7
-76
-56
-253
-144
-180
-67
-204
-375
-262
-107
-8
-32
-368
-266
-28
-*/

@@ -1,0 +1,71 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+#define MAXN 1005
+
+struct Point
+{
+    long long x, y;
+} verts[MAXN];
+
+int n;
+//checks if a point is enclosed within a polygon
+//returns -1 if on boundary, 0 if outside, 1 if enclosed
+//polygon given as a list of consecutive vertices with the last one equal to the first
+
+int isEnclosed(Point p)
+{
+    int intersectCount = 0;
+
+    //extend ray vertically and count intersections
+    for (int i = 0; i < n; i++)
+    {
+        //point.x must be >= l.first and < r.first
+        Point l, r;
+        if (verts[i].x < verts[i + 1].x)
+            l = verts[i], r = verts[i + 1];
+        else if (verts[i].x > verts[i + 1].x)
+            l = verts[i + 1], r = verts[i];
+        //if line is vertical, we can ignore (can be proven to work))
+        else
+        {
+            if (verts[i].x == p.x && p.y >= min(verts[i].y, verts[i + 1].y) && p.y <= max(verts[i].y, verts[i + 1].y))
+                return -1;
+            continue;
+        }
+
+        if (p.x >= l.x && p.x < r.x) {
+            long long cross = (r.y - l.y) * (p.x - l.x) - (p.y - l.y) * (r.x - l.x);
+            if (cross == 0)
+                return -1;
+            intersectCount += cross > 0;
+        }
+    }
+    return intersectCount % 2;
+}
+
+int main()
+{
+    int m;
+    cin >> n >> m;
+
+    for (int i = 0; i < n; i++)
+    {
+        cin >> verts[i].x >> verts[i].y;
+    }
+    verts[n] = verts[0];
+
+    for (int i = 0; i < m; i++)
+    {
+        Point p;
+        cin >> p.x >> p.y;
+
+        int res = isEnclosed(p);
+        if (res == -1)
+            cout << "BOUNDARY" << endl;
+        else if (res == 0)
+            cout << "OUTSIDE" << endl;
+        else
+            cout << "INSIDE" << endl;
+    }
+}

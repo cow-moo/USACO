@@ -56,11 +56,5 @@ int main()
             i = n - 1;
         }
     }
-    // for (auto p : cnt)
-    // {
-    //     cout << p.first << " " << p.second << endl;
-    // }
     cout << ans << endl;
 }
-
-//1, 2, 3, 6

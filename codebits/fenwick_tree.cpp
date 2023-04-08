@@ -2,11 +2,11 @@
 using namespace std;
 #define SIZE 1000
 
-int bit[SIZE];
+long long bit[SIZE];
 
-int sum(int i)
+long long sum(int i)
 {
-    int sum = 0;
+    long long sum = 0;
     while (i > 0)
     {
         sum += bit[i];
@@ -15,7 +15,7 @@ int sum(int i)
     return sum;
 }
 
-void add(int i, int delta)
+void add(int i, long long delta)
 {
     while (i <= SIZE)
     {

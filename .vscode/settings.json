@@ -5,6 +5,19 @@
         "random": "cpp",
         "map": "cpp",
         "iostream": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "xstring": "cpp",
+        "utility": "cpp",
+        "vector": "cpp",
+        "xtree": "cpp",
+        "limits": "cpp",
+        "ostream": "cpp",
+        "unordered_map": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp"
     }
 }
