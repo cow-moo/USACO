@@ -18,6 +18,8 @@
         "deque": "cpp",
         "list": "cpp",
         "xiosbase": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "cmath": "cpp",
+        "complex": "cpp"
     }
 }

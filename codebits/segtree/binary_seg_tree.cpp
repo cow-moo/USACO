@@ -3,75 +3,65 @@
 #include <algorithm>
 using namespace std;
 
-const int def = 1e9;
+//[l, r) for range queries
+template <class T>
 struct SegTree
 {
+    const T def = 0; //change here
     int n;
-    vector<int> bits;
-    SegTree(int n) : n(n), bits((n + 1) * 2, def) {}
+    vector<T> tree;
+    SegTree(int n) : n(n), tree(n * 2, def) {}
 
-    void build()
+    void init()
     {
         for (int i = n - 1; i > 0; i--)
-            bits[i] = combine(bits[i << 1], bits[i << 1 | 1]);
+            tree[i] = combine(tree[i << 1], tree[i << 1 | 1]);
     }
 
-    int combine(int a, int b)
+    T combine(T a, T b)
     {
-        return a + b;
+        return a + b; //change here
     }
 
-    void update(int k, int x)
+    void update(int k, T x)
     {
-        k += n, bits[k] = x;
-        for (k /= 2; k; k /= 2)
-            bits[k] = combine(bits[k * 2], bits[k * 2 + 1]);
+        k += n, tree[k] = x;
+        for (k >>= 1; k; k >>= 1)
+            tree[k] = combine(tree[k << 1], tree[k << 1 | 1]);
     }
 
-    int query(int l, int r)
+    T query(int l, int r)
     {
-        int res = def;
-        for (l += n, r += n; l <= r; l /= 2, r /= 2)
+        T resl = def, resr = def;
+        for (l += n, r += n; l < r; l >>= 1, r >>= 1)
         {
-            if (l & 1) 
-                res = combine(res, bits[l++]);
-            if (!(r & 1)) 
-                res = combine(res, bits[r--]);
+            if (l & 1)
+                resl = combine(resl, tree[l++]);
+            if (r & 1)
+                resr = combine(tree[--r], resr);
         }
-        return res;
+        return combine(resl, resr);
     }
 };
+using ST = SegTree<long long>;
 
-/* use for query if combine is not commutative
-int query(int l, int r)
-{
-    int resl = def, resr = def;
-    for (l += n, r += n; l <= r; l /= 2, r /= 2) {
-        if (l & 1) resl = combine(resl, bits[l++]);
-        if (!(r & 1)) resr = combine(bits[r--], resr);
-    }
-    return combine(resl, resr);
-}
-*/
-
-//gets interval associated with index in bits array
-pair<int, int> debug(SegTree st, int i)
+pair<int, int> interval(ST st, int i)
 {
     if (i >= st.n)
         return {i - st.n, i - st.n + 1};
-    pair<int, int> l = debug(st, i * 2);
-    pair<int, int> r = debug(st, i * 2 + 1);
+    pair<int, int> l = interval(st, i * 2);
+    pair<int, int> r = interval(st, i * 2 + 1);
     if (l.second != r.first)
         return {-1, -1};
     return {l.first, r.second};
 }
 
-void printDebug(SegTree st)
+void debug(ST st)
 {
     for (int i = 1; i < 2 * st.n; i++)
     {
-        auto res = debug(st, i);
-        cout << i << ": [" << res.first << ", " << res.second << ") " << st.bits[i] << endl;
+        auto res = interval(st, i);
+        cout << i << ": [" << res.first << ", " << res.second << ") " << st.tree[i] << endl;
     }
 }
 
@@ -80,14 +70,14 @@ int main()
     int n;
     cin >> n;
     
-    SegTree st(n);
+    ST st(n);
 
     for (int i = 0; i < n; i++)
     {
-        cin >> st.bits[n + i];
+        cin >> st.tree[n + i];
     }
-    st.build();
-    printDebug(st);
+    st.init();
+    debug(st);
 
     while (true)
     {
@@ -116,3 +106,18 @@ int main()
         }
     }
 }
+
+/* non-commutative version of query
+    T query(int l, int r)
+    {
+        T res = def;
+        for (l += n, r += n; l < r; l >>= 1, r >>= 1)
+        {
+            if (l & 1) 
+                res = combine(res, tree[l++]);
+            if (r & 1) 
+                res = combine(res, tree[--r]);
+        }
+        return res;
+    }
+*/

@@ -1,95 +1,65 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
-#define MAXN 200050
-#define INF 1000000000
 
-int arr[MAXN];
-
-struct SegmentTree
+template <class T>
+struct SegTree
 {
+    const T def = 0; //change here
     int n;
-    int (*op)(int, int);
-    int id;
-    int tree[4 * MAXN];
+    vector<T> tree;
+    SegTree(int n) : n(n), tree(n * 2, def) {}
 
-    SegmentTree(int arr[], int n, int (*op)(int, int), int id) : n(n), op(op), id(id)
+    void init()
     {
-        build(1, 0, n - 1, arr);
+        for (int i = n - 1; i > 0; i--)
+            tree[i] = combine(tree[i << 1], tree[i << 1 | 1]);
     }
 
-    int build(int v, int tl, int tr, int arr[]) {
-        if (tl == tr)
-        {
-            return tree[v] = arr[tl];
-        }
-        int tm = (tl + tr) / 2;
-        return tree[v] = op(build(v * 2, tl, tm, arr), build(v * 2 + 1, tm + 1, tr, arr));
-    }
-
-    int query(int l, int r)
+    T combine(T a, T b)
     {
-        //cout << n - 1 << endl;
-        return query(l, r, 1, 0, n - 1);
+        return a ^ b; //change here
     }
 
-    int query(int l, int r, int v, int tl, int tr) {
-        //cout << v << endl;
-        if (l > r)
-        {
-            return id;
-        }
-        if (l == tl && r == tr)
-        {
-            return tree[v];
-        }
-        int tm = (tl + tr) / 2;
-        return op(query(l, min(r, tm), v * 2, tl, tm), query(max(l, tm + 1), r, v * 2 + 1, tm + 1, tr));
-    }
-
-    void updateVal(int pos, int val)
+    void update(int k, T x)
     {
-        updateVal(pos, val, 1, 0, n - 1);
+        k += n, tree[k] = x;
+        for (k >>= 1; k; k >>= 1)
+            tree[k] = combine(tree[k << 1], tree[k << 1 | 1]);
     }
 
-    void updateVal(int pos, int val, int v, int tl, int tr)
+    T query(int l, int r)
     {
-        if (tl == tr)
+        T resl = def, resr = def;
+        for (l += n, r += n; l < r; l >>= 1, r >>= 1)
         {
-            tree[v] = val;
-            return;
+            if (l & 1)
+                resl = combine(resl, tree[l++]);
+            if (r & 1)
+                resr = combine(tree[--r], resr);
         }
-        int tm = (tl + tr) / 2;
-        if (pos >= tl && pos <= tm)
-        {
-            updateVal(pos, val, v * 2, tl, tm);
-        }
-        else
-        {
-            updateVal(pos, val, v * 2 + 1, tm + 1, tr);
-        }
-        tree[v] = op(tree[v * 2], tree[v * 2 + 1]);
+        return combine(resl, resr);
     }
 };
-
-int xorOp(int a, int b)
-{
-    return a ^ b;
-}
+using ST = SegTree<long long>;
 
 int main() {
     int n, q;
     cin >> n >> q;
 
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
+    ST st(n);
 
-    SegmentTree xorTree(arr, n, &xorOp, 0);
+    for (int i = 0; i < n; i++)
+    {
+        cin >> st.tree[n + i];
+    }
+    st.init();
 
     for (int i = 0; i < q; i++)
     {
         int a, b;
         cin >> a >> b;
-        cout << xorTree.query(a - 1, b - 1) << endl;
+        cout << st.query(a - 1, b) << endl;
     }
 }

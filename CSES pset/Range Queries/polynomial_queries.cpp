@@ -1,124 +1,107 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
-#define MAXN 200005
 
-struct SegmentTree
+//[l, r) for range queries
+template <class T, class L>
+struct LazySegTree
 {
-    int n;
-    long long tree[4 * MAXN];
-    pair<long long, long long> lazy[4 * MAXN];
-    //lazy[v] != 0 means tree[v] is updated but not its children
-    //start, step
+    const T def = 0;
+    const L ldef = {0, 0};
+    int n, h;
+    vector<T> tree;
+    vector<L> lazy;
+    LazySegTree(int n) : n(n), tree(n * 2, def), lazy(n, ldef), h(sizeof(int) * 8 - __builtin_clz(n)) {}
 
-    static const long long id = 0;
-
-    long long op(long long a, long long b)
+    void init()
     {
-        return a + b;
+        for (int i = n - 1; i > 0; i--)
+            tree[i] = combine(tree[i << 1], tree[i << 1 | 1]);
     }
 
-    void updateLazy(long long start, long long step, int v, int tl, int tr)
+    //get value of current interval given values of child intervals, lazy value, and length of interval
+    T combine(T a, T b, L val = {0, 0}, int len = 0)
     {
-        //(start + (start + (len - 1) * step)) * len / 2
-        //(2 * start + (len - 1) * step) * len / 2
-        //5 7 9
-        //5 2 3
-        //0 0
-        //1 1
-        lazy[v].first += start;
-        lazy[v].second += step;
-        long long len = tr - tl + 1;
-        tree[v] += start * len + step * (len - 1) * len / 2;
+        return a + b + val.first * len + val.second * len * (len - 1) / 2;
     }
 
-    SegmentTree(long long arr[], int n) : n(n)
+    //apply increment, update tree and lazy
+    void apply(int p, L val, int len)
     {
-        build(1, 0, n - 1, arr);
-    }
-
-    long long build(int v, int tl, int tr, long long arr[])
-    {
-        lazy[v] = {0, 0};
-        if (tl == tr)
+        if (p < n)
         {
-            return tree[v] = arr[tl];
+            lazy[p].first += val.first;
+            lazy[p].second += val.second;
         }
-        int tm = (tl + tr) / 2;
-        return tree[v] = op(build(v * 2, tl, tm, arr), build(v * 2 + 1, tm + 1, tr, arr));
+        tree[p] = combine(tree[p], def, val, len);
     }
 
-    long long query(int l, int r)
+    void build(int p)
     {
-        return query(l, r, 1, 0, n - 1);
+        int len = 1;
+        while (p > 1)
+            p >>= 1, len <<= 1, tree[p] = combine(tree[p << 1], tree[p << 1 | 1], lazy[p], len);
     }
 
-    long long query(int l, int r, int v, int tl, int tr)
+    void push(int p)
     {
-        if (l > r)
+        for (int s = h, len = 1 << (h - 1); s > 0; s--, len >>= 1)
         {
-            return id;
+            int i = p >> s;
+            if (lazy[i] != ldef)
+            {
+                apply(i << 1, lazy[i], len);
+                lazy[i].first += lazy[i].second * len;
+                apply(i << 1 | 1, lazy[i], len);
+                lazy[i] = ldef;
+            }
         }
-        if (l == tl && r == tr)
-        {
-            return tree[v];
-        }
-        if (lazy[v].first != 0 && tl != tr)
-            push(v, tl, tr);
-        int tm = (tl + tr) / 2;
-        return op(query(l, min(r, tm), v * 2, tl, tm), query(max(l, tm + 1), r, v * 2 + 1, tm + 1, tr));
     }
 
-    void push(int v, int tl, int tr)
+    void increment(int l, int r)
     {
-        //tl = first
-        //tl + 1 = first + second
-        //tl + i = first + i * second
-        //tl + (tm + 1 - tl)
-        int tm = (tl + tr) / 2;
-        updateLazy(lazy[v].first, lazy[v].second, v * 2, tl, tm);
-        updateLazy(lazy[v].first + (tm - tl + 1) * lazy[v].second, lazy[v].second, v * 2 + 1, tm + 1, tr);
-        lazy[v] = {0, 0};
+        l += n, r += n;
+        push(l), push(r - 1);
+        int l0 = l, r0 = r, len = 1;
+        L lval = {1, 1}, rval = {r - l + 1, 1};
+        for (; l < r; l >>= 1, r >>= 1, len <<= 1)
+        {
+            if (l & 1)
+                apply(l++, lval, len), lval.first += len;
+            if (r & 1)
+                rval.first -= len, apply(--r, rval, len);
+        }
+        build(l0), build(r0 - 1);
     }
 
-    void updateRange(int l, int r)
+    T query(int l, int r)
     {
-        updateRange(l, r, l, 1, 0, n - 1);
-    }
-
-    void updateRange(int l, int r, long long l0, int v, int tl, int tr)
-    {
-        if (l > r)
-            return;
-        if (l == tl && r == tr)
+        l += n, r += n;
+        push(l), push(r - 1);
+        T resl = def, resr = def;
+        for (; l < r; l >>= 1, r >>= 1)
         {
-            updateLazy(l - l0 + 1, 1, v, tl, tr);
+            if (l & 1)
+                resl = combine(resl, tree[l++]);
+            if (r & 1)
+                resr = combine(tree[--r], resr);
         }
-        else
-        {
-            if (lazy[v].first != 0 && tl != tr)
-                push(v, tl, tr);
-            int tm = (tl + tr) / 2;
-            updateRange(l, min(r, tm), l0, v * 2, tl, tm); //max(l, tm + 1)
-            updateRange(max(l, tm + 1), r, l0, v * 2 + 1, tm + 1, tr);
-
-            tree[v] = op(tree[v * 2], tree[v * 2 + 1]);
-        }
+        return combine(resl, resr);
     }
 };
-
-long long arr[MAXN];
+using LST = LazySegTree<long long, pair<long long, long long>>;
 
 int main()
 {
     int n, q;
     cin >> n >> q;
 
-    for (int i = 0; i < n; i++)
-    {
-        cin >> arr[i];
-    }
+    LST st(n);
 
-    SegmentTree tree(arr, n);
+    for (int i = 0; i < n; i++)
+        cin >> st.tree[n + i];
+    st.init();
 
     for (int i = 0; i < q; i++)
     {
@@ -131,7 +114,7 @@ int main()
             cin >> a >> b;
             a--; b--;
 
-            tree.updateRange(a, b);
+            st.increment(a, b + 1);
         }
         else if (inp == 2)
         {
@@ -139,25 +122,7 @@ int main()
             cin >> a >> b;
             a--; b--;
 
-            cout << tree.query(a, b) << endl;
-        }
-        else
-        {
-            for (int i = 0; i < n; i++)
-            {
-                cout << tree.query(i, i) << " ";
-            }
-            cout << endl;
+            cout << st.query(a, b + 1) << endl;
         }
     }
 }
-
-/*
-100 100
-7 6 4 6 2 9 4 8 10 4 10 3 7 10 2 9 4 1 7 4 5 9 9 7 9 6 5 10 8 4 7 10 5 3 3 1 6 7 6 1 5 7 7 7 7 2 3 5 10 8 4 8 7 5 8 6 8 6 7 9 3 10 6 6 8 1 5 8 5 9 9 5 8 8 4 6 6 3 1 2 1 2 9 2 10 9 9 6 5 7 9 10 5 8 2 7 4 1 4 7
-1 62 83
-1 72 96
-1 20 81
-2 42 51
-
-*/

@@ -9,7 +9,7 @@ struct LazySegTree {
     int n, h;
     vector<long long> bits;
     vector<long long> lazy;
-    LazySegTree(int n) : n(n), bits((n + 1) * 2, def), lazy(n, 0), h(sizeof(int) * 8 - __builtin_clz(n)) {}
+    LazySegTree(int n) : n(n), bits(n * 2, def), lazy(n, 0), h(sizeof(int) * 8 - __builtin_clz(n)) {}
 
     void init()
     {
@@ -35,10 +35,8 @@ struct LazySegTree {
                 lazy[p] = val;
             else
                 lazy[p] += lazy[p] < 0 ? -val : val;
-            bits[p] = combine(bits[p << 1], bits[p << 1 | 1], lazy[p], len);
         }
-        else
-            bits[p] = combine(bits[p], def, val, len);
+        bits[p] = combine(bits[p], def, val, len);
     }
 
     void build(int p)
@@ -96,7 +94,7 @@ struct LazySegTree {
     {
         l += n, r += n;
         push(l), push(r - 1);
-        
+
         long long res = def;
         for (; l < r; l >>= 1, r >>= 1)
         {

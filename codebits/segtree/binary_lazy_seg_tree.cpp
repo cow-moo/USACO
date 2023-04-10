@@ -2,54 +2,41 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-using LST = LazySegTree<long long>;
 
 //[l, r) for range queries
-template <class T>
+template <class T, class L>
 struct LazySegTree
 {
-    static const T def = 0;
-
+    const T def = 0; //change here
+    const L ldef = 0; //change here
     int n, h;
-    vector<T> bits;
-    vector<T> lazy;
-    LazySegTree(int n) : n(n), bits((n + 1) * 2, def), lazy(n, 0), h(sizeof(int) * 8 - __builtin_clz(n)) {}
+    vector<T> tree;
+    vector<L> lazy;
+    LazySegTree(int n) : n(n), tree(n * 2, def), lazy(n, ldef), h(sizeof(int) * 8 - __builtin_clz(n)) {}
 
     void init()
     {
         for (int i = n - 1; i > 0; i--)
-            bits[i] = combine(bits[i << 1], bits[i << 1 | 1]);
+            tree[i] = combine(tree[i << 1], tree[i << 1 | 1]);
     }
 
-    //get value of current interval given values of child intervals, lazy value, and length of interval
-    T combine(T a, T b, T val = 0, int len = 0)
+    T combine(T a, T b, L val = 0, int len = 0)
     {
-        if (val < 0)
-            return -val * len;
-        else
-            return a + b + val * len;
+        return a + b + val * len; //change here, calculate value given child intervals, lazy val, interval length
     }
 
-    //apply increment, update bits and lazy
-    void apply(int p, T val, int len)
+    void apply(int p, L val, int len)
     {
         if (p < n)
-        {
-            if (val < 0)
-                lazy[p] = val;
-            else
-                lazy[p] += lazy[p] < 0 ? -val : val;
-            bits[p] = combine(bits[p << 1], bits[p << 1 | 1], lazy[p], len);
-        }
-        else
-            bits[p] = combine(bits[p], def, val, len);
+            lazy[p] += val; //change here, propagate val to lazy[p]
+        tree[p] = combine(tree[p], def, val, len);
     }
 
     void build(int p)
     {
         int len = 1;
         while (p > 1)
-            p >>= 1, len <<= 1, bits[p] = combine(bits[p << 1], bits[p << 1 | 1], lazy[p], len);
+            p >>= 1, len <<= 1, tree[p] = combine(tree[p << 1], tree[p << 1 | 1], lazy[p], len);
     }
 
     void push(int p)
@@ -57,16 +44,16 @@ struct LazySegTree
         for (int s = h, len = 1 << (h - 1); s > 0; s--, len >>= 1)
         {
             int i = p >> s;
-            if (lazy[i] != 0)
+            if (lazy[i] != ldef)
             {
                 apply(i << 1, lazy[i], len);
                 apply(i << 1 | 1, lazy[i], len);
-                lazy[i] = 0;
+                lazy[i] = ldef;
             }
         }
     }
 
-    void increment(int l, int r, T val)
+    void increment(int l, int r, L val)
     {
         l += n, r += n;
         push(l), push(r - 1);
@@ -85,36 +72,36 @@ struct LazySegTree
     {
         l += n, r += n;
         push(l), push(r - 1);
-        T res = def;
+        T resl = def, resr = def;
         for (; l < r; l >>= 1, r >>= 1)
         {
             if (l & 1)
-                res = combine(res, bits[l++]);
+                resl = combine(resl, tree[l++]);
             if (r & 1)
-                res = combine(res, bits[--r]);
+                resr = combine(tree[--r], resr);
         }
-        return res;
+        return combine(resl, resr);
     }
 };
+using LST = LazySegTree<long long, long long>;
 
-
-pair<int, int> debug(LST lst, int i)
+pair<int, int> interval(LST lst, int i)
 {
     if (i >= lst.n)
         return {i - lst.n, i - lst.n + 1};
-    pair<int, int> l = debug(lst, i * 2);
-    pair<int, int> r = debug(lst, i * 2 + 1);
+    pair<int, int> l = interval(lst, i * 2);
+    pair<int, int> r = interval(lst, i * 2 + 1);
     if (l.second != r.first)
         return {-1, -1};
     return {l.first, r.second};
 }
 
-void printDebug(LST lst)
+void debug(LST lst)
 {
     for (int i = 1; i < 2 * lst.n; i++)
     {
-        auto res = debug(lst, i);
-        cout << i << ": [" << res.first << ", " << res.second << ") " << lst.bits[i];
+        auto res = interval(lst, i);
+        cout << i << ": [" << res.first << ", " << res.second << ") " << lst.tree[i];
         if (i < lst.n)
             cout << " " << lst.lazy[i];
         cout << endl;
@@ -127,13 +114,30 @@ int main()
     LST lst(n);
     for (int i = 0; i < n; i++)
     {
-        lst.bits[i + n] = i;
+        lst.tree[i + n] = i;
     }
     lst.init();
     //printDebug(lst);
     
-    printDebug(lst);
+    debug(lst);
     cout << lst.query(3, 9) << endl;
     lst.increment(0, 5, 3);
     cout << lst.query(3, 9) << endl;
 }
+
+/* non-commutative version of query
+T query(int l, int r)
+{
+    l += n, r += n;
+    push(l), push(r - 1);
+    T res = def;
+    for (; l < r; l >>= 1, r >>= 1)
+    {
+        if (l & 1)
+            res = combine(res, tree[l++]);
+        if (r & 1)
+            res = combine(res, tree[--r]);
+    }
+    return res;
+}
+*/

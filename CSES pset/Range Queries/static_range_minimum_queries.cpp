@@ -1,50 +1,66 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
-#define MAXN 200050
-#define INF 1000000000
 
-int tree[4 * MAXN];
-int arr[MAXN];
-int n;
-
-int build(int v = 1, int tl = 0, int tr = n - 1)
+template <class T>
+struct SegTree
 {
-    if (tl == tr)
-    {
-        return tree[v] = arr[tl];
-    }
-    int tm = (tl + tr) / 2;
-    return tree[v] = min(build(v * 2, tl, tm), build(v * 2 + 1, tm + 1, tr));
-}
+    const T def = 1e9; //change here
+    int n;
+    vector<T> tree;
+    SegTree(int n) : n(n), tree(n * 2, def) {}
 
-int query(int l, int r, int v = 1, int tl = 0, int tr = n - 1)
-{
-    if (l > r)
-        return INF;
-    if (tl == l && tr == r)
+    void init()
     {
-        return tree[v];
+        for (int i = n - 1; i > 0; i--)
+            tree[i] = combine(tree[i << 1], tree[i << 1 | 1]);
     }
-    int tm = (tl + tr) / 2;
-    return min(query(l, min(r, tm), v * 2, tl, tm), query(max(l, tm + 1), r, v * 2 + 1, tm + 1, tr));
-}
+
+    T combine(T a, T b)
+    {
+        return min(a, b); //change here
+    }
+
+    void update(int k, T x)
+    {
+        k += n, tree[k] = x;
+        for (k >>= 1; k; k >>= 1)
+            tree[k] = combine(tree[k << 1], tree[k << 1 | 1]);
+    }
+
+    T query(int l, int r)
+    {
+        T resl = def, resr = def;
+        for (l += n, r += n; l < r; l >>= 1, r >>= 1)
+        {
+            if (l & 1)
+                resl = combine(resl, tree[l++]);
+            if (r & 1)
+                resr = combine(tree[--r], resr);
+        }
+        return combine(resl, resr);
+    }
+};
+using ST = SegTree<long long>;
 
 int main()
 {
-    int q;
+    int n, q;
     cin >> n >> q;
+
+    ST st(n);
 
     for (int i = 0; i < n; i++)
     {
-        cin >> arr[i];
+        cin >> st.tree[n + i];
     }
-
-    build();
+    st.init();
 
     for (int i = 0; i < q; i++)
     {
         int a, b;
         cin >> a >> b;
-        cout << query(a - 1, b - 1) << endl;
+        cout << st.query(a - 1, b) << endl;
     }
 }
