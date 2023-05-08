@@ -4,9 +4,10 @@
 using namespace std;
 #define MAXN 100005
 
-vector<int> adj[MAXN], rev[MAXN], order;
+vector<int> adj[MAXN], rev[MAXN], order, adjComponent[MAXN];
 bool visited[MAXN];
 int components[MAXN];
+long long coins[MAXN], dp[MAXN];
 
 void dfs1(int cur)
 {
@@ -36,6 +37,11 @@ int main()
     int n, m;
     cin >> n >> m;
 
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> coins[i];
+    }
+
     for (int i = 0; i < m; i++)
     {
         int a, b;
@@ -51,16 +57,38 @@ int main()
     }
 
     int cnt = 0;
-    for (int i = n - 1; i >= 0; i--)
+    for (int i = order.size() - 1; i >= 0; i--)
     {   
         if (components[order[i]] == 0)
             dfs2(order[i], ++cnt);
     }
 
-    cout << cnt << endl;
     for (int i = 1; i <= n; i++)
     {
-        cout << components[i] << " ";
+        for (int j : adj[i])
+        {
+            if (components[i] != components[j])
+            {
+                adjComponent[components[i]].push_back(components[j]);
+            }
+        }
+        dp[components[i]] += coins[i];
     }
-    cout << endl;
+
+    for (int i = cnt; i >= 1; i--)
+    {
+        long long best = 0;
+        for (int j : adjComponent[i])
+        {
+            best = max(best, dp[j]);
+        }
+        dp[i] += best;
+    }
+
+    long long ans = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        ans = max(ans, dp[i]);
+    }
+    cout << ans << endl;
 }

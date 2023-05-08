@@ -3,24 +3,22 @@
 using namespace std;
 #define MAXN 200005
 
-vector<pair<int, int>> adj[MAXN];
-int ans[MAXN];
+vector<int> adj[MAXN];
+int ans[MAXN], dist[MAXN];
 
-void dfs(int cur, int prev, int dist)
+int dfs(int cur, int prev)
 {
-    cout << cur << " " << prev << " " << dist << endl;
-    for (pair<int, int> &v : adj[cur])
+    int res = cur;
+    for (int next : adj[cur])
     {
-        cout << "a";
-        if (v.first == prev)
+        if (next == prev)
             continue;
-        if (dist + 1 > v.second)
-        {
-            v.second = dist + 1;
-            ans[v.first] = max(ans[v.first], dist + 1);
-            dfs(v.first, cur, dist + 1);
-        }
+        dist[next] = dist[cur] + 1;
+        int temp = dfs(next, cur);
+        if (dist[temp] > dist[res])
+            res = temp;
     }
+    return res;
 }
 
 int main()
@@ -35,20 +33,29 @@ int main()
     {
         int a, b;
         cin >> a >> b;
-        adj[a - 1].push_back({b - 1, 0});
-        adj[b - 1].push_back({a - 1, 0});
+        adj[a].push_back(b);
+        adj[b].push_back(a);
     }
 
-    for (int i = 0; i < n; i++)
-    {
-        if (adj[i].size() == 1)
-            dfs(i, -1, 0);
-        cout << endl;
-    }
+    fill(dist + 1, dist + n + 1, -1);
+    dist[1] = 0;
+    int res = dfs(1, 0);
 
-    for (int i = 0; i < n; i++)
+    fill(dist + 1, dist + n + 1, -1);
+    dist[res] = 0;
+    res = dfs(res, 0);
+
+    for (int i = 1; i <= n; i++)
     {
-        cout << ans[i] << " ";
+        ans[i] = max(ans[i], dist[i]);
+        dist[i] = -1;
+    }
+    dist[res] = 0;
+    res = dfs(res, 0);
+
+    for (int i = 1; i <= n; i++)
+    {
+        cout << max(ans[i], dist[i]) << " ";
     }
     cout << endl;
 }

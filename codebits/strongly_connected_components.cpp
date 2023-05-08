@@ -4,7 +4,7 @@
 using namespace std;
 #define MAXN 100005
 
-vector<int> adj[MAXN], rev[MAXN], order;
+vector<int> adj[MAXN], rev[MAXN], order, adjComponent[MAXN];
 bool visited[MAXN];
 int components[MAXN];
 
@@ -51,16 +51,20 @@ int main()
     }
 
     int cnt = 0;
-    for (int i = n - 1; i >= 0; i--)
+    for (int i = order.size() - 1; i >= 0; i--)
     {   
         if (components[order[i]] == 0)
             dfs2(order[i], ++cnt);
     }
 
-    cout << cnt << endl;
     for (int i = 1; i <= n; i++)
     {
-        cout << components[i] << " ";
+        for (int j : adj[i])
+        {
+            if (components[i] != components[j])
+            {
+                adjComponent[components[i]].push_back(components[j]);
+            }
+        }
     }
-    cout << endl;
 }
