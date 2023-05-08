@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-#define SIEVE_SIZE 1000
+#define SIEVE_SIZE 10000000
 
 bool isPrime[SIEVE_SIZE];
 int spf[SIEVE_SIZE]; //smallest prime factor
@@ -32,7 +32,15 @@ int main()
     sieve();
     for (auto p : primes)
     {
-        cout << p << endl;
+        //cout << p << endl;
+        int cnt = 0;
+        while (p % 2 == 0)
+        {
+            cnt++;
+            p /= 2;
+        }
+        if (cnt >= 10)
+            cout << p << " " << cnt << endl;
     }
 
     //spf can be used to find factorization

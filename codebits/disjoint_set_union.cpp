@@ -2,8 +2,7 @@
 using namespace std;
 #define MAXN 100000
 
-int parent[MAXN];
-int sz[MAXN]; //can also be by rank
+int parent[MAXN], sz[MAXN]; //can also be by rank
 
 void make_set(int v)
 {

@@ -20,6 +20,8 @@
         "xiosbase": "cpp",
         "xlocale": "cpp",
         "cmath": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "array": "cpp",
+        "xutility": "cpp"
     }
 }

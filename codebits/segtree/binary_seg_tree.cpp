@@ -7,9 +7,10 @@ using namespace std;
 template <class T>
 struct SegTree
 {
-    const T def = 0; //change here
+    const T def = 0; //change here (remove const to support assignment)
     int n;
     vector<T> tree;
+    SegTree() = default;
     SegTree(int n) : n(n), tree(n * 2, def) {}
 
     void init()

@@ -9,12 +9,8 @@ long long fastExp(long long base, long long exp)
     while (exp > 0)
     {
         if (exp & 1)
-        {
-            res *= base;
-            res %= MOD;
-        }
-        base = base * base;
-        base %= MOD;
+            res = res * base % MOD;
+        base = base * base % MOD;
         exp >>= 1;
     }
     return res;
