@@ -7,11 +7,12 @@ using namespace std;
 template <class T, class L>
 struct LazySegTree
 {
-    const T def = 0; //change here
+    const T def = 0; //change here (remove const to support assignment)
     const L ldef = 0; //change here
     int n, h;
     vector<T> tree;
     vector<L> lazy;
+    LazySegTree() = default;
     LazySegTree(int n) : n(n), tree(n * 2, def), lazy(n, ldef), h(sizeof(int) * 8 - __builtin_clz(n)) {}
 
     void init()

@@ -4,48 +4,32 @@ using namespace std;
 #define MAXN 200005
 
 vector<int> adj[MAXN];
-int parent[MAXN][20];
-int depth[MAXN];
-
-int getDepth(int cur)
-{
-    if (depth[cur] == 0)
-        return depth[cur] = getDepth(parent[cur][0]) + 1;
-    else
-        return depth[cur];
-}
+int parent[MAXN][20], depth[MAXN];
 
 int getParent(int x, int k)
 {
-    for (int j = 0; k > 0; j++)
+    for (int j = 0; k >= 1 << j; j++)
     {
         if (k & (1 << j))
-        {
             x = parent[x][j];
-            k ^= 1 << j;
-        }
     }
-
     return x;
 }
 
 void dfs(int cur)
 {
-    for (int v : adj[cur])
+    for (int next : adj[cur])
     {
-        if (v == parent[cur][0])
+        if (next == parent[cur][0])
             continue;
-        parent[v][0] = cur;
-        dfs(v);
+        parent[next][0] = cur;
+        depth[next] = depth[cur] + 1;
+        dfs(next);
     }
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    depth[1] = 1;
     int n, q;
     cin >> n >> q;
 
@@ -72,10 +56,10 @@ int main()
         int a, b;
         cin >> a >> b;
 
-        if (getDepth(a) > getDepth(b))
+        if (depth[a] > depth[b])
             swap(a, b);
 
-        int res = getDepth(b) - getDepth(a);
+        int res = depth[b] - depth[a];
         b = getParent(b, res);
 
         if (a == b)

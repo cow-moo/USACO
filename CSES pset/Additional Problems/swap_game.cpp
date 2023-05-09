@@ -5,12 +5,6 @@ using namespace std;
 
 unordered_set<string> visited;
 
-//i < j
-string swap(string x, int i, int j)
-{
-    return x.substr(0, i) + x[j] + x.substr(i + 1, j - i - 1) + x[i] + x.substr(j + 1);
-}
-
 int main()
 {
     string num = "";
@@ -31,6 +25,7 @@ int main()
 
         if (cur == "123456789")
         {
+            //cout << visited.size() << endl;
             cout << dist << endl;
             return 0;
         }
@@ -39,7 +34,8 @@ int main()
         {
             if (i % 3 != 2)
             {
-                string temp = swap(cur, i, i + 1);
+                string temp = cur;
+                swap(temp[i], temp[i + 1]);
                 if (visited.count(temp) == 0)
                 {
                     visited.insert(temp);
@@ -48,7 +44,8 @@ int main()
             }
             if (i < 6)
             {
-                string temp = swap(cur, i, i + 3);
+                string temp = cur;
+                swap(temp[i], temp[i + 3]);
                 if (visited.count(temp) == 0)
                 {
                     visited.insert(temp);

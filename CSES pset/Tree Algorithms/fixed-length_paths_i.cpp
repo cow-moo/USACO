@@ -65,9 +65,7 @@ void dfsUpdateCnt(int cur, int prev, int depth)
 
 void dfs(int cur)
 {
-    dfsSize(cur, 0);
     cur = getCentroid(cur, 0, sz[cur]);
-    //cout << cur << endl;
 
     for (int next : adj[cur])
     {
@@ -84,6 +82,8 @@ void dfs(int cur)
     {
         if (done[next])
             continue;
+        if (sz[next] > sz[cur])
+            dfsSize(next, 0);
         dfs(next);
     }
 }
@@ -102,6 +102,7 @@ int main()
     }
 
     cnt[0] = 1;
+    dfsSize(1, 0);
     dfs(1);
 
     cout << ans << endl;
