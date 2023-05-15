@@ -62,8 +62,10 @@ struct NTTHelper
         }
     }
 
-    vector<long long> multiply(vector<long long> a, vector<long long> b)
+    vector<long long> multiply(vector<long long> a, vector<long long> b, bool resize = true)
     {
+        int sz = 1 << (sizeof(int) * 8 - __builtin_clz(a.size() + b.size() - 2));
+        a.resize(sz), b.resize(sz);
         ntt(a, false);
         ntt(b, false);
         vector<long long> res(a.size());
@@ -72,6 +74,7 @@ struct NTTHelper
             res[i] = a[i] * b[i] % MOD;
         }
         ntt(res, true);
+        res.resize(a.size() + b.size() - 1);
         return res;
     }
 };
@@ -99,10 +102,8 @@ int main()
 
     int n, m;
     cin >> n >> m; 
-    
-    int sz = 1 << (sizeof(int) * 8 - __builtin_clz(n + m - 1));
 
-    vector<long long> a(sz), b(sz);
+    vector<long long> a(n), b(m);
 
     for (int i = 0; i < n; i++)
     {

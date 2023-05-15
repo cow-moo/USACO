@@ -2,8 +2,8 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
+#define MOD 998244353ll
 
-template<long long MOD>
 struct NTTHelper
 {
     static const int sz = 1 << 20;
@@ -74,75 +74,61 @@ struct NTTHelper
         ntt(res, true);
         return res;
     }
-};
-NTTHelper<998244353ll> helper1; //2^23 * 7 * 17 + 1
-NTTHelper<7340033ll> helper2; //2^20 * 7 + 1
-//167772161 = 2^25 * 5 + 1
-//469762049 = 2^26 * 7 + 1
-//3 is primitive root for all
+} helper; //2^23 * 7 * 17 + 1
 
 vector<long long> multiply(vector<long long> &a, vector<long long> &b)
 {
     int sz = 1 << (sizeof(int) * 8 - __builtin_clz(a.size() + b.size() - 2));
     a.resize(sz), b.resize(sz);
-    vector<long long> res1 = helper1.multiply(a, b);
-    vector<long long> res2 = helper2.multiply(a, b);
-    res1.resize(a.size() + b.size() - 1), res2.resize(a.size() + b.size() - 1);
+    vector<long long> res = helper.multiply(a, b);
+    res.resize(a.size() + b.size() - 1);
+    return res;
+}
 
-    __int128_t p1 = 705577077098755, p2 = 6621569415984895, mod = 7327146493083649;
-
-    vector<long long> res(res1.size());
-    for (int i = 0; i < res.size(); i++)
+long long pow(long long b, long long e)
+{
+    long long res = 1;
+    while (e > 0)
     {
-        res[i] = (res1[i] * p1 + res2[i] * p2) % mod;
+        if (e & 1)
+            res = res * b % MOD;
+        b = b * b % MOD;
+        e >>= 1;
     }
     return res;
 }
 
 int main()
 {
-    cin.tie(nullptr)->sync_with_stdio(false);
+    long long n, a1, x, y, m, k;
+    cin >> n >> a1 >> x >> y >> m >> k;
 
-    int n, m;
-    cin >> n >> m; 
-    
-    //int sz = 1 << (sizeof(int) * 8 - __builtin_clz(n + m - 1));
-
-    vector<long long> a(n), b(m);
+    vector<long long> a, binom;
 
     for (int i = 0; i < n; i++)
     {
-        cin >> a[i];
-    }
-    for (int i = m - 1; i >= 0; i--)
-    {
-        cin >> b[i];
+        a.push_back(a1);
+        a1 = (a1 * x + y) % m;
     }
 
-    vector<long long> res = multiply(a, b);
-
-    for (int i = 0; i < n + m - 1; i++)
+    long long cur = 1;
+    for (int i = 1; i <= n; i++)
     {
-        cout << res[i] << " ";
-    }
-    cout << endl;
-}
-
-/*
-alternative iterative version
-void ntt(long long *arr, int m)
-{
-    for (int l = 1; l < m; l *= 2)
-    {
-        for (int i = 0; i < m; i += l * 2)
+        if (i < k)
+            binom.push_back(0);
+        else
         {
-            for (int j = 0; j < l; j++)
-            {
-                long long x = arr[i + j], y = omega[j + l] * arr[i + j + l] % MOD;
-                arr[i + j] = x + y < MOD ? x + y : x + y - MOD;
-                arr[i + j + l] = x - y >= 0 ? x - y : x - y + MOD;
-            }
+            binom.push_back(cur);
+            cur = cur * (i + 1) % MOD;
+            cur = cur * pow(i - k + 1, MOD - 2) % MOD;
         }
     }
+
+    vector<long long> res = multiply(a, binom);
+    long long ans = 0;
+    for (int i = 0; i < n; i++)
+    {
+        ans ^= (i + 1) * res[i];
+    }
+    cout << ans << endl;
 }
-*/

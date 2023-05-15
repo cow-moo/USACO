@@ -1,10 +1,20 @@
 #include <iostream>
 #include <algorithm>
 #include <iomanip>
-#include <math.h>
 using namespace std;
 
 int arr[105];
+
+long long roundd(long double x)
+{
+    long long floor = x;
+    long double frac = x - floor;
+    if (frac > 0.5 || (frac == 0.5 && floor % 2 == 1))
+    {
+        floor++;
+    }
+    return floor;
+}
 
 int main()
 {
@@ -26,6 +36,8 @@ int main()
             ans += (long double)num / denom;
         }
     }
+    //cout << fixed << setprecision(12) << ans << endl;
     cout << fixed << setprecision(6);
-    cout << round(ans * 1000000) / 1000000.0 << endl;
+    //cout << ans << endl;
+    cout << roundd(ans * 1000000) / 1000000.0 << endl;
 }
