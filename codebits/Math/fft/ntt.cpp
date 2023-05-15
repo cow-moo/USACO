@@ -2,8 +2,8 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
+#define MOD 998244353
 
-template<long long MOD>
 struct NTTHelper
 {
     static const int sz = 1 << 20;
@@ -74,28 +74,14 @@ struct NTTHelper
         ntt(res, true);
         return res;
     }
-};
-NTTHelper<998244353ll> helper1; //2^23 * 7 * 17 + 1
-NTTHelper<7340033ll> helper2; //2^20 * 7 + 1
-//167772161 = 2^25 * 5 + 1
-//469762049 = 2^26 * 7 + 1
-//3 is primitive root for all
+} helper;
 
 vector<long long> multiply(vector<long long> &a, vector<long long> &b)
 {
     int sz = 1 << (sizeof(int) * 8 - __builtin_clz(a.size() + b.size() - 2));
     a.resize(sz), b.resize(sz);
-    vector<long long> res1 = helper1.multiply(a, b);
-    vector<long long> res2 = helper2.multiply(a, b);
-    res1.resize(a.size() + b.size() - 1), res2.resize(a.size() + b.size() - 1);
-
-    __int128_t p1 = 705577077098755, p2 = 6621569415984895, mod = 7327146493083649;
-
-    vector<long long> res(res1.size());
-    for (int i = 0; i < res.size(); i++)
-    {
-        res[i] = (res1[i] * p1 + res2[i] * p2) % mod;
-    }
+    vector<long long> res = helper.multiply(a, b);
+    res.resize(a.size() + b.size() - 1);
     return res;
 }
 
@@ -106,8 +92,6 @@ int main()
     int n, m;
     cin >> n >> m; 
     
-    //int sz = 1 << (sizeof(int) * 8 - __builtin_clz(n + m - 1));
-
     vector<long long> a(n), b(m);
 
     for (int i = 0; i < n; i++)

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
 #define MAXN 100000
 #define INF 1000000000
@@ -6,16 +7,21 @@ using namespace std;
 struct SegmentTree
 {
     int n;
-    int (*op)(int, int);
-    int id;
-    int tree[4 * MAXN];
+    long long tree[4 * MAXN];
 
-    SegmentTree(int arr[], int n, int (*op)(int, int), int id) : n(n), op(op), id(id)
+    static const long long id = 0;
+
+    long long op(long long a, long long b)
+    {
+        return a + b;
+    }
+
+    SegmentTree(long long arr[], int n) : n(n)
     {
         build(1, 0, n - 1, arr);
     }
 
-    int build(int v, int tl, int tr, int arr[]) {
+    long long build(int v, int tl, int tr, long long arr[]) {
         if (tl == tr)
         {
             return tree[v] = arr[tl];
@@ -24,13 +30,13 @@ struct SegmentTree
         return tree[v] = op(build(v * 2, tl, tm, arr), build(v * 2 + 1, tm + 1, tr, arr));
     }
 
-    int query(int l, int r)
+    long long query(int l, int r)
     {
         //cout << n - 1 << endl;
         return query(l, r, 1, 0, n - 1);
     }
 
-    int query(int l, int r, int v, int tl, int tr) {
+    long long query(int l, int r, int v, int tl, int tr) {
         //cout << v << endl;
         if (l > r)
         {
@@ -44,12 +50,12 @@ struct SegmentTree
         return op(query(l, min(r, tm), v * 2, tl, tm), query(max(l, tm + 1), r, v * 2 + 1, tm + 1, tr));
     }
 
-    void updateVal(int pos, int val)
+    void updateVal(int pos, long long val)
     {
         updateVal(pos, val, 1, 0, n - 1);
     }
 
-    void updateVal(int pos, int val, int v, int tl, int tr)
+    void updateVal(int pos, long long val, int v, int tl, int tr)
     {
         if (tl == tr)
         {
@@ -69,19 +75,10 @@ struct SegmentTree
     }
 };
 
-int add(int a, int b)
+long long arr[MAXN];
+
+int main()
 {
-    return a + b;
-}
-
-int min(int a, int b)
-{
-    return a < b ? a : b;
-}
-
-int arr[MAXN];
-
-int main() {
     int n;
     cin >> n;
 
@@ -89,15 +86,10 @@ int main() {
         cin >> arr[i];
     }
 
-    SegmentTree sumTree(arr, n, &add, 0);
+    SegmentTree sumTree(arr, n);
     cout << sumTree.query(0, 2) << endl;
     sumTree.updateVal(1, 5);
     cout << sumTree.query(0, 2) << endl;
-
-    SegmentTree minTree(arr, n, &min, INF);
-    cout << minTree.query(0, 2) << endl;
-    minTree.updateVal(2, 1);
-    cout << minTree.query(0, 2) << endl;
 }
 
 /*

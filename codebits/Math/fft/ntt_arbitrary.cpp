@@ -62,10 +62,8 @@ struct NTTHelper
         }
     }
 
-    vector<long long> multiply(vector<long long> a, vector<long long> b, bool resize = true)
+    vector<long long> multiply(vector<long long> a, vector<long long> b)
     {
-        int sz = 1 << (sizeof(int) * 8 - __builtin_clz(a.size() + b.size() - 2));
-        a.resize(sz), b.resize(sz);
         ntt(a, false);
         ntt(b, false);
         vector<long long> res(a.size());
@@ -74,21 +72,25 @@ struct NTTHelper
             res[i] = a[i] * b[i] % MOD;
         }
         ntt(res, true);
-        res.resize(a.size() + b.size() - 1);
         return res;
     }
 };
-NTTHelper<998244353ll> helper1;
-NTTHelper<7340033ll> helper2;
+NTTHelper<998244353ll> helper1; //2^23 * 7 * 17 + 1
+NTTHelper<469762049ll> helper2; //2^26 * 7 + 1
+//167772161 = 2^25 * 5 + 1
+//7340033 = 2^20 * 7 + 1
+//3 is primitive root for all
 
 vector<long long> multiply(vector<long long> &a, vector<long long> &b)
 {
+    int sz = 1 << (sizeof(int) * 8 - __builtin_clz(a.size() + b.size() - 2));
+    a.resize(sz), b.resize(sz);
     vector<long long> res1 = helper1.multiply(a, b);
     vector<long long> res2 = helper2.multiply(a, b);
+    res1.resize(a.size() + b.size() - 1), res2.resize(a.size() + b.size() - 1);
 
-    __int128_t p1 = 705577077098755, p2 = 6621569415984895, mod = 7327146493083649;
-
-    vector<long long> res(a.size());
+    __int128_t p1 = 260520730147305702, p2 = 208416582520653596, mod = 468937312667959297;
+    vector<long long> res(res1.size());
     for (int i = 0; i < res.size(); i++)
     {
         res[i] = (res1[i] * p1 + res2[i] * p2) % mod;
@@ -102,7 +104,7 @@ int main()
 
     int n, m;
     cin >> n >> m; 
-
+    
     vector<long long> a(n), b(m);
 
     for (int i = 0; i < n; i++)
@@ -122,3 +124,22 @@ int main()
     }
     cout << endl;
 }
+
+/*
+alternative iterative version
+void ntt(long long *arr, int m)
+{
+    for (int l = 1; l < m; l *= 2)
+    {
+        for (int i = 0; i < m; i += l * 2)
+        {
+            for (int j = 0; j < l; j++)
+            {
+                long long x = arr[i + j], y = omega[j + l] * arr[i + j + l] % MOD;
+                arr[i + j] = x + y < MOD ? x + y : x + y - MOD;
+                arr[i + j + l] = x - y >= 0 ? x - y : x - y + MOD;
+            }
+        }
+    }
+}
+*/
