@@ -5,10 +5,10 @@ using namespace std;
 
 struct Matrix
 {
-    int m, n;
+    int n, m;
     vector<vector<long long>> vals;
 
-    Matrix(int m, int n) : m(m), n(n), vals(m, vector<long long>(n)) {}
+    Matrix(int n, int m) : n(n), m(m), vals(n, vector<long long>(m)) {}
 
     vector<long long>& operator[](int i)
     {
@@ -17,10 +17,10 @@ struct Matrix
 
     Matrix operator+(Matrix &other)
     {
-        Matrix res(m, n);
-        for (int i = 0; i < m; i++)
+        Matrix res(n, m);
+        for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < m; j++)
             {
                 res[i][j] = vals[i][j] + other[i][j];
             }
@@ -30,10 +30,10 @@ struct Matrix
 
     Matrix operator-(Matrix &other)
     {
-        Matrix res(m, n);
-        for (int i = 0; i < m; i++)
+        Matrix res(n, m);
+        for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < m; j++)
             {
                 res[i][j] = vals[i][j] - other[i][j];
             }
@@ -43,12 +43,12 @@ struct Matrix
 
     Matrix operator*(Matrix &other)
     {
-        Matrix res(m, other.n);
-        for (int k = 0; k < n; k++)
+        Matrix res(n, other.m);
+        for (int k = 0; k < m; k++)
         {
-            for (int i = 0; i < m; i++)
+            for (int i = 0; i < n; i++)
             {
-                for (int j = 0; j < other.n; j++)
+                for (int j = 0; j < other.m; j++)
                 {
                     res[i][j] += vals[i][k] * other[k][j];
                     res[i][j] %= MOD;
@@ -77,9 +77,9 @@ struct Matrix
 
     void print()
     {
-        for (int i = 0; i < m; i++)
+        for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < m; j++)
             {
                 cout << vals[i][j] << " ";
             }
