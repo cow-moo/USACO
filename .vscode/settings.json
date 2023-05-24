@@ -25,6 +25,8 @@
         "__tree": "cpp",
         "type_traits": "cpp",
         "__split_buffer": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "xutility": "cpp",
+        "xhash": "cpp"
     }
 }

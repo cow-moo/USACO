@@ -1,39 +1,32 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-#define BIT_SIZE 1000
 
 struct FenwickTree
 {
-    int bit[BIT_SIZE];
+    vector<long long> bit;
 
-    FenwickTree(int n)
-    {
-        for (int i = 0; i <= n; i++)
-        {
-            bit[i] = 0;
-        }
-    }
+    FenwickTree(int n) : bit(n + 1) {}
 
-    int sum(int i)
+    long long sum(int i)
     {
         i++;
-        int sum = 0;
+        long long sum = 0;
         while (i > 0)
         {
             sum += bit[i];
-            i -= (i) & -(i);
+            i -= i & -i;
         }
         return sum;
     }
 
-    void add(int i, int delta)
+    void add(int i, long long delta)
     {
         i++;
-        while (i <= BIT_SIZE)
+        while (i < bit.size())
         {
             bit[i] += delta;
-            i += (i) & -(i);
+            i += i & -i;
         }
     }
 };
