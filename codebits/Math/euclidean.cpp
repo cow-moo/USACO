@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 
-//a 
 pair<long long, long long> euclidean(long long a, long long b)
 {
     pair<long long, long long> pa = {1, 0}, pb = {0, 1};

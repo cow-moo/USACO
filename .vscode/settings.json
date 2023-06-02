@@ -26,7 +26,31 @@
         "type_traits": "cpp",
         "__split_buffer": "cpp",
         "string": "cpp",
+<<<<<<< HEAD
         "xutility": "cpp",
         "xhash": "cpp"
+=======
+        "tuple": "cpp",
+        "functional": "cpp",
+        "__functional_03": "cpp",
+        "iterator": "cpp",
+        "numeric": "cpp",
+        "memory": "cpp",
+        "regex": "cpp",
+        "__bit_reference": "cpp",
+        "__hash_table": "cpp",
+        "array": "cpp",
+        "filesystem": "cpp",
+        "forward_list": "cpp",
+        "initializer_list": "cpp",
+        "string_view": "cpp",
+        "unordered_set": "cpp",
+        "iosfwd": "cpp",
+        "istream": "cpp",
+        "__node_handle": "cpp",
+        "bitset": "cpp",
+        "(": "cpp",
+        "__string": "cpp"
+>>>>>>> 7c55ffed2da619c49d79ca24df6e5898b6e9ec40
     }
 }

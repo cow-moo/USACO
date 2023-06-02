@@ -3,10 +3,10 @@
 using namespace std;
 #define MAXN 105
 #define MOD 1000000007ll
-
+ 
 //prefix[i] is longest proper prefix = suffix for s[0..i]
 int prefix[MAXN];
-
+ 
 void prefix_function(string s)
 {
     for (int i = 1; i < s.length(); i++)
@@ -18,19 +18,19 @@ void prefix_function(string s)
         prefix[i] = j;
     }
 }
-
+ 
 struct Matrix
 {
     int m, n;
     vector<vector<long long>> vals;
-
+ 
     Matrix(int m, int n) : m(m), n(n), vals(m, vector<long long>(n)) {}
-
+ 
     vector<long long>& operator[](int i)
     {
         return vals[i];
     }
-
+ 
     Matrix operator+(Matrix &other)
     {
         Matrix res(m, n);
@@ -43,7 +43,7 @@ struct Matrix
         }
         return res;
     }
-
+ 
     Matrix operator-(Matrix &other)
     {
         Matrix res(m, n);
@@ -56,7 +56,7 @@ struct Matrix
         }
         return res;
     }
-
+ 
     Matrix operator*(Matrix &other)
     {
         Matrix res(m, other.n);
@@ -73,7 +73,7 @@ struct Matrix
         }
         return res;
     }
-
+ 
     static Matrix exp(Matrix base, long long exp)
     {
         Matrix res(base.n, base.n);
@@ -90,7 +90,7 @@ struct Matrix
         }
         return res;
     }
-
+ 
     void print()
     {
         for (int i = 0; i < m; i++)
@@ -103,9 +103,9 @@ struct Matrix
         }
     }
 };
-
+ 
 bool visited[30];
-
+ 
 long long exp(long long base, long long exp)
 {
     long long res = 1;
@@ -118,15 +118,15 @@ long long exp(long long base, long long exp)
     }
     return res;
 }
-
+ 
 int main()
 {
     int n;
     string s;
     cin >> n >> s;
-
+ 
     prefix_function(s);
-
+ 
     Matrix transition(s.length(), s.length());
     for (int i = 0; i < s.length(); i++)
     {
