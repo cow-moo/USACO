@@ -11,17 +11,11 @@ void countSort(int classCount)
 {
     fill(cnt, cnt + classCount, 0);
     for (int i = 0; i < n; i++)
-    {
         cnt[classes[0][i]]++;
-    }
     for (int i = 1; i < classCount; i++)
-    {
         cnt[i] += cnt[i - 1];
-    }
     for (int i = n - 1; i >= 0; i--)
-    {
         order[1][--cnt[classes[0][order[0][i]]]] = order[0][i];
-    }
     swap(order[0], order[1]);
 }
 
@@ -40,22 +34,16 @@ int main()
         classes[0][i] = str[i] - '`';
     }
 
-    for (int i = -1, shift = 0; shift == 0 || (1 << i) < n; i++, shift = (1 << i))
+    for (int shift = 0; shift < n; shift = (shift << 1) | !shift)
     {
         for (int j = 0; j < n; j++)
-        {
-            order[0][j] -= shift;
-            if (order[0][j] < 0)
-                order[0][j] += n;
-        }
+            order[0][j] = order[0][j] - shift < 0 ? order[0][j] + n - shift : order[0][j] - shift;
         countSort(classCount);
         classes[1][order[0][0]] = 0;
         classCount = 1;
-        for (int j = 0; j < n; j++)
+        for (int j = 1; j < n; j++)
         {
-            pair<int, int> cur = {classes[0][order[0][j]], classes[0][(order[0][j] + shift) % n]};
-            pair<int, int> prev = {classes[0][order[0][j - 1]], classes[0][(order[0][j - 1] + shift) % n]};
-            if (cur != prev)
+            if (tie(classes[0][order[0][j]], classes[0][(order[0][j] + shift) % n]) != tie(classes[0][order[0][j - 1]], classes[0][(order[0][j - 1] + shift) % n]))
                 classCount++;
             classes[1][order[0][j]] = classCount - 1;
         }
@@ -64,7 +52,7 @@ int main()
 
     for (int i = 0; i < n; i++)
     {
-        cout << order[0][i] << " " << str.substr(order[0][i]) << endl;//<< str.substr(0, order[0][i]) << endl;
+        cout << order[0][i] << " " << str.substr(order[0][i]) << str.substr(0, order[0][i]) << endl;
     }
 
     cout << str.substr(order[0][0]) << str.substr(0, order[0][0]) << endl;

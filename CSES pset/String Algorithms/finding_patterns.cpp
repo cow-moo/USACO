@@ -34,15 +34,16 @@ bool comp(int a, string b)
  
 int main()
 {
+    cin.tie(nullptr)->sync_with_stdio(false);
     cin >> str;
-    str += "{";
+    str += "`";
     n = str.length();
  
     int classCount = 27;
     for (int i = 0; i < n; i++)
     {
         order[0][i] = i;
-        classes[0][i] = str[i] - 'a';
+        classes[0][i] = str[i] - '`';
     }
  
     for (int i = -1, shift = 0; shift == 0 || (1 << i) < n; i++, shift = (1 << i))
@@ -80,6 +81,6 @@ int main()
         cin >> s;
         //cout << lower_bound(order[0], order[0] + n, s, comp) - order[0] << endl;
         //cout << str.substr(lower_bound(order[0], order[0] + n, s, comp) - order[0]) << endl;
-        cout << (str.substr(*lower_bound(order[0], order[0] + n, s, comp), s.length()) == s ? "YES" : "NO") << endl;
+        cout << (str.substr(*lower_bound(order[0], order[0] + n, s, comp), s.length()) == s ? "YES" : "NO") << "\n";
     }
 }

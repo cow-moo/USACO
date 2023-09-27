@@ -25,35 +25,6 @@ void countSort(int classCount, int ind)
     }
     swap(order[0], order[1]);
 }
- 
-// long long getOverlap(int a, int b)
-// {
-//     long long res = 0;
-//     while (true)
-//     {
-//         for (int i = 1; ; i++)
-//         {
-//             if (classes[i][a] != classes[i][b])
-//             {
-//                 if (i == 1)
-//                 {
-//                     return res;
-//                 }
-//                 else
-//                 {
-//                     res += 1 << (i - 2);
-//                     a += 1 << (i - 2);
-//                     if (a >= n)
-//                         a -= n;
-//                     b += 1 << (i - 2);
-//                     if (b >= n)
-//                         b -= n;
-//                     break;
-//                 }
-//             }
-//         }
-//     }
-// }
 
 int getOverlap(int a, int b)
 {
@@ -114,14 +85,4 @@ int main()
         ans -= getOverlap(order[0][i - 1], order[0][i]);
     }
     cout << ans << endl;
- 
-    // for (int i = 0; i < n; i++)
-    // {
-    //     cout << order[0][i] << " " << str.substr(order[0][i]);// << "\n";
-    //     for (int j = 1; j <= 3; j++)
-    //     {
-    //         cout << " " << classes[j][order[0][i]];
-    //     }
-    //     cout << "\n";
-    // }
 }

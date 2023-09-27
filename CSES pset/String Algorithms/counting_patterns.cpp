@@ -39,6 +39,7 @@ bool comp2(string b, int a)
 
 int main()
 {
+    cin.tie(nullptr)->sync_with_stdio(false);
     cin >> str;
     str += "`";
     n = str.length();
@@ -83,6 +84,6 @@ int main()
     {
         string s;
         cin >> s;
-        cout << upper_bound(order[0], order[0] + n, s, comp2) - lower_bound(order[0], order[0] + n, s, comp) << endl;
+        cout << upper_bound(order[0], order[0] + n, s, comp2) - lower_bound(order[0], order[0] + n, s, comp) << "\n";
     }
 }

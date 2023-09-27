@@ -85,6 +85,7 @@ using ST = SegTree<long long>;
  
 int main()
 {
+    cin.tie(nullptr)->sync_with_stdio(false);
     cin >> str;
     str += "`";
     n = str.length();
@@ -138,7 +139,7 @@ int main()
         cin >> s;
         //cout << lower_bound(order[0], order[0] + n, s, comp) - order[0] << endl;
         //cout << str.substr(lower_bound(order[0], order[0] + n, s, comp) - order[0]) << endl;
-        cout << st.query(lower_bound(order[0], order[0] + n, s, comp) - order[0], upper_bound(order[0], order[0] + n, s, comp2) - order[0]) + 1 << endl;
+        cout << st.query(lower_bound(order[0], order[0] + n, s, comp) - order[0], upper_bound(order[0], order[0] + n, s, comp2) - order[0]) + 1 << "\n";
         //cout << (str.substr(*lower_bound(order[0], order[0] + n, s, comp), s.length()) == s ? "YES" : "NO") << endl;
     }
 }
