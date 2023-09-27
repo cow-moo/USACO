@@ -48,6 +48,13 @@ void computeChoose()
     }
 }
 
+long long choose(int a, int b)
+{
+    if (b == 0)
+        return 1;
+    return (fact[a] * inv[b] % MOD) * inv[a - b] % MOD;
+}
+
 int main()
 {
 //    for (int i = 0; i < 400; i++)

@@ -36,11 +36,6 @@ void sieve()
 int main()
 {
     sieve();
-    for (int i = 1; i <= 5000000; i++)
-    {
-
-        //cout << i << ": " << totient[i] << endl;
-    }
 
     // for (int i = 1; i <= 100; i++)
     // {
