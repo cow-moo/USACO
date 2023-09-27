@@ -29,13 +29,15 @@ int main()
 {
     string str;
     cin >> str;
+    str += '`';
     n = str.length();
 
-    int classCount = 26;
+
+    int classCount = 27;
     for (int i = 0; i < n; i++)
     {
         order[0][i] = i;
-        classes[0][i] = str[i] - 'a';
+        classes[0][i] = str[i] - '`';
     }
 
     for (int i = -1, shift = 0; shift == 0 || (1 << i) < n; i++, shift = (1 << i))
@@ -60,10 +62,10 @@ int main()
         swap(classes[0], classes[1]);
     }
 
-    // for (int i = 0; i < n; i++)
-    // {
-    //     cout << order[i] << " " << str.substr(order[i]) << str.substr(0, order[i]) << endl;
-    // }
+    for (int i = 0; i < n; i++)
+    {
+        cout << order[0][i] << " " << str.substr(order[0][i]) << endl;//<< str.substr(0, order[0][i]) << endl;
+    }
 
     cout << str.substr(order[0][0]) << str.substr(0, order[0][0]) << endl;
 }

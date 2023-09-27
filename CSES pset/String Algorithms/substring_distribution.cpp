@@ -5,7 +5,8 @@ using namespace std;
 #define LOGN 30
  
 int order[2][MAXN], classes[LOGN][MAXN], cnt[MAXN];
-int n, logn;
+int ans[MAXN];
+int n;
  
 //sorts order by value in class
 void countSort(int classCount, int ind)
@@ -26,41 +27,12 @@ void countSort(int classCount, int ind)
     swap(order[0], order[1]);
 }
  
-// long long getOverlap(int a, int b)
-// {
-//     long long res = 0;
-//     while (true)
-//     {
-//         for (int i = 1; ; i++)
-//         {
-//             if (classes[i][a] != classes[i][b])
-//             {
-//                 if (i == 1)
-//                 {
-//                     return res;
-//                 }
-//                 else
-//                 {
-//                     res += 1 << (i - 2);
-//                     a += 1 << (i - 2);
-//                     if (a >= n)
-//                         a -= n;
-//                     b += 1 << (i - 2);
-//                     if (b >= n)
-//                         b -= n;
-//                     break;
-//                 }
-//             }
-//         }
-//     }
-// }
-
 int getOverlap(int a, int b)
 {
     int res = 0;
-    for (int i = logn; i >= 0; i--)
+    for (int i = LOGN - 1; i >= 0; i--)
     {
-        if (classes[i + 1][a] == classes[i + 1][b])
+        if (classes[i][a] == classes[i][b])
         {
             res += 1 << i;
             a += 1 << i;
@@ -78,7 +50,6 @@ int main()
     cin >> str;
     str += '`';
     n = str.length();
-    long long ans = (long long)n * (n - 1) / 2;
  
     int classCount = 27;
     for (int i = 0; i < n; i++)
@@ -106,14 +77,23 @@ int main()
                 classCount++;
             classes[i + 1][order[0][j]] = classCount - 1;
         }
-        logn = i;
+        //swap(classes[0], classes[1]);
     }
-
+ 
+    //cout << ans << endl;
     for (int i = 1; i < n; i++)
     {
-        ans -= getOverlap(order[0][i - 1], order[0][i]);
+        ans[getOverlap(order[0][i - 1], order[0][i]) + 1]++;
+        ans[n - order[0][i]]--;
     }
-    cout << ans << endl;
+    
+    long long cur = 0;
+    for (int i = 1; i < n; i++)
+    {
+        cur += ans[i];
+        cout << cur << " ";
+    }
+    cout << "\n";
  
     // for (int i = 0; i < n; i++)
     // {
@@ -124,4 +104,5 @@ int main()
     //     }
     //     cout << "\n";
     // }
+ 
 }

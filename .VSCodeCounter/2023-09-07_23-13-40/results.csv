@@ -1,0 +1,43 @@
+"filename", "language", "C++", "comment", "blank", "total"
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/disjoint_set_union.cpp", "C++", 29, 1, 7, 37
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/fenwick_tree.cpp", "C++", 27, 2, 5, 34
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/fenwick_tree_class.cpp", "C++", 52, 10, 10, 72
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/max_queue.cpp", "C++", 30, 2, 6, 38
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/segtree/binary_lazy_segtree.cpp", "C++", 113, 18, 13, 144
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/segtree/binary_segtree.cpp", "C++", 95, 15, 14, 124
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/segtree/binary_segtree_2d_compressed.cpp", "C++", 91, 4, 13, 108
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/segtree/lazy_segtree.cpp", "C++", 135, 4, 21, 160
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/segtree/persistent_segtree.cpp", "C++", 64, 7, 12, 83
+"/Users/ralphcao/Git/USACO/codebits/Data Structures/segtree/segtree.cpp", "C++", 78, 107, 14, 199
+"/Users/ralphcao/Git/USACO/codebits/Geometry/convex_hull_monotone_chain.cpp", "C++", 47, 2, 10, 59
+"/Users/ralphcao/Git/USACO/codebits/Geometry/graham_scan.cpp", "C++", 48, 16, 15, 79
+"/Users/ralphcao/Git/USACO/codebits/Geometry/is_enclosed.cpp", "C++", 56, 6, 9, 71
+"/Users/ralphcao/Git/USACO/codebits/Geometry/point_in_triangle.cpp", "C++", 41, 0, 10, 51
+"/Users/ralphcao/Git/USACO/codebits/Geometry/rotating_calipers.cpp", "C++", 70, 4, 17, 91
+"/Users/ralphcao/Git/USACO/codebits/Graph/strongly_connected_components.cpp", "C++", 62, 0, 8, 70
+"/Users/ralphcao/Git/USACO/codebits/Math/2sat.cpp", "C++", 89, 0, 12, 101
+"/Users/ralphcao/Git/USACO/codebits/Math/combo.cpp", "C++", 41, 22, 10, 73
+"/Users/ralphcao/Git/USACO/codebits/Math/convex_hull_trick.cpp", "C++", 39, 8, 14, 61
+"/Users/ralphcao/Git/USACO/codebits/Math/euclidean.cpp", "C++", 24, 0, 3, 27
+"/Users/ralphcao/Git/USACO/codebits/Math/fft/fft.cpp", "C++", 90, 0, 14, 104
+"/Users/ralphcao/Git/USACO/codebits/Math/fft/fft_cpalgo.cpp", "C++", 69, 0, 13, 82
+"/Users/ralphcao/Git/USACO/codebits/Math/fft/ntt.cpp", "C++", 100, 18, 14, 132
+"/Users/ralphcao/Git/USACO/codebits/Math/fft/ntt_arbitrary.cpp", "C++", 109, 21, 15, 145
+"/Users/ralphcao/Git/USACO/codebits/Math/fft/ntt_iterative.cpp", "C++", 111, 7, 14, 132
+"/Users/ralphcao/Git/USACO/codebits/Math/matrix.cpp", "C++", 81, 0, 8, 89
+"/Users/ralphcao/Git/USACO/codebits/Math/sieve_of_eratosthenes.cpp", "C++", 30, 2, 6, 38
+"/Users/ralphcao/Git/USACO/codebits/String/better_suffix_array.cpp", "C++", 62, 1, 8, 71
+"/Users/ralphcao/Git/USACO/codebits/String/longest_palindromic_substring.cpp", "C++", 60, 1, 10, 71
+"/Users/ralphcao/Git/USACO/codebits/String/minimal_rotation.cpp", "C++", 41, 4, 4, 49
+"/Users/ralphcao/Git/USACO/codebits/String/prefix_function.cpp", "C++", 32, 2, 6, 40
+"/Users/ralphcao/Git/USACO/codebits/String/string_math.cpp", "C++", 57, 1, 13, 71
+"/Users/ralphcao/Git/USACO/codebits/String/suffix_array.cpp", "C++", 34, 0, 9, 43
+"/Users/ralphcao/Git/USACO/codebits/String/suffix_tree.cpp", "C++", 82, 6, 13, 101
+"/Users/ralphcao/Git/USACO/codebits/String/trie.cpp", "C++", 51, 5, 12, 68
+"/Users/ralphcao/Git/USACO/codebits/String/z_function.cpp", "C++", 28, 0, 4, 32
+"/Users/ralphcao/Git/USACO/codebits/Tree/centroid.cpp", "C++", 41, 0, 7, 48
+"/Users/ralphcao/Git/USACO/codebits/Tree/euler_path.cpp", "C++", 59, 0, 7, 66
+"/Users/ralphcao/Git/USACO/codebits/Tree/heavy_light_decomp.cpp", "C++", 130, 1, 14, 145
+"/Users/ralphcao/Git/USACO/codebits/Tree/lowest_common_ancestor.cpp", "C++", 71, 2, 13, 86
+"/Users/ralphcao/Git/USACO/codebits/big_outputs.cpp", "C++", 8, 0, 3, 11
+"Total", "-", 2577, 299, 430, 3306
