@@ -7,7 +7,7 @@ template<long long MOD>
 struct NTTHelper
 {
     static const int sz = 1 << 20;
-    long long omega[sz];
+    long long omega[sz]; //omega[i + m/2]: i-th of the m roots of unity for i = 0..m/2, only first half roots of unity with positive complex are stored
 
     NTTHelper()
     {
